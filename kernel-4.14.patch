@@ -1,8 +1,53 @@
 diff --git a/package/kernel/linux/modules/netdevices.mk b/package/kernel/linux/modules/netdevices.mk
-index 6ea2f1df89..32f4e4199d 100644
+index 6ea2f1d..182ba52 100644
 --- a/package/kernel/linux/modules/netdevices.mk
 +++ b/package/kernel/linux/modules/netdevices.mk
-@@ -1013,3 +1013,54 @@ define KernelPackage/be2net/description
+@@ -642,6 +642,44 @@ endef
+ $(eval $(call KernelPackage,ixgbevf))
+ 
+ 
++define KernelPackage/i40e
++  SUBMENU:=$(NETWORK_DEVICES_MENU)
++  TITLE:=Intel(R) Ethernet Controller XL710 Family support
++  DEPENDS:=@PCI_SUPPORT +kmod-mdio +kmod-ptp +kmod-hwmon-core +kmod-libphy
++  KCONFIG:=CONFIG_I40E \
++    CONFIG_I40E_VXLAN=n \
++    CONFIG_I40E_HWMON=y \
++    CONFIG_I40E_DCA=n
++  FILES:=$(LINUX_DIR)/drivers/net/ethernet/intel/i40e/i40e.ko
++  AUTOLOAD:=$(call AutoProbe,i40e)
++endef
++
++define KernelPackage/i40e/description
++ Kernel modules for Intel(R) Ethernet Controller XL710 Family 40 Gigabit Ethernet adapters.
++endef
++
++$(eval $(call KernelPackage,i40e))
++
++
++define KernelPackage/i40evf
++  SUBMENU:=$(NETWORK_DEVICES_MENU)
++  TITLE:=Intel(R) Ethernet Adaptive Virtual Function support
++  DEPENDS:=@PCI_SUPPORT
++  KCONFIG:=CONFIG_I40EVF
++  FILES:= \
++       $(LINUX_DIR)/drivers/net/ethernet/intel/i40evf/i40evf.ko
++  AUTOLOAD:=$(call AutoProbe,i40evf)
++endef
++
++define KernelPackage/i40evf/description
++ Kernel modules for Intel XL710,
++	  X710, X722, XXV710, and all devices advertising support for
++	  Intel Ethernet Adaptive Virtual Function devices.
++endef
++
++$(eval $(call KernelPackage,i40evf))
++
++
+ define KernelPackage/b44
+   TITLE:=Broadcom 44xx driver
+   KCONFIG:=CONFIG_B44
+@@ -1013,3 +1051,54 @@ define KernelPackage/be2net/description
  endef
  
  $(eval $(call KernelPackage,be2net))

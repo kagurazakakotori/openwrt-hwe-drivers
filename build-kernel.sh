@@ -15,20 +15,21 @@ git clone --branch v$OPENWRT_RELEASE --depth 1 https://git.openwrt.org/openwrt/o
 cd buildroot
 
 # Apply changes
-git apply ../mellanox-inbox-driver.patch
+git apply ../kernel-4.14.patch
 sed -i -e "s/grep.*mkhash md5/echo '$KERNEL_VERMAGIC'/g" include/kernel-defaults.mk
 
 # Prepare
 wget https://downloads.openwrt.org/releases/$OPENWRT_RELEASE/targets/$ARCH/config.buildinfo -O .config
 make defconfig
 
-# Compiled
+# Compile
 make toolchain/install $MAKEFLAG
 make target/linux/compile $MAKEFLAG
 make package/kernel/linux/compile $MAKEFLAG
 
 # Copy compiled package
-cp ./bin/targets/$ARCH/packages/kmod-mlx*.ipk ../
+cp -f ./bin/targets/$ARCH/packages/kmod-mlx*.ipk ../
+cp -f ./bin/targets/$ARCH/packages/kmod-i40e*.ipk ../
 cd ../
 
 # Clean up
